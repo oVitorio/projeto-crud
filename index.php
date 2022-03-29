@@ -1,3 +1,8 @@
+<?php
+require_once'class/classe-pessoa.php';
+$conn = new Pessoa("crudpdo","localhost","root","");
+
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -6,8 +11,30 @@
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
+
+        <?php
+            if(isset($_POST['nome'])){
+
+                $nome = addslashes($_POST['nome']);
+                $telefone = addslashes($_POST['telefone']);
+                $email = addslashes($_POST['email']);
+                
+                if(!empty($nome) && !empty($telefone) && !empty($email)){
+                  
+                    if(!$p-> cadastkrarPessoa($nome, $telefone, $email)){
+                        echo"EMAIL JA CADASTRADO"; 
+                    }
+                        
+                    
+                }else{
+                    echo"preencha todos os campos";
+                }
+            }
+                
+        ?>
+
         <section id="esquerda">
-            <form>
+            <form method="POST">
                 <h2>CADASTRAR PESSOA</h2>
                 <label>NOME</label>
                     <input type="text" name="nome" id="nome">
@@ -20,21 +47,36 @@
         </section>
 
         <section id="direita">
-            <table>
+        <table>
                 <tr id="title"> 
                     <td>NOME</td>
                     <td>TELFONNE</td>
                     <td colspan="2">EMAIL</td>
                 </tr>
-                <tr>
-                    <td>maria</td>
-                    <td>19971560826</td>
-                    <td>maria@gmail.com</td>
+        <?php
+          $dados =$conn ->selectdados();
+            if(count($dados)>0){
+                for ($i=0; $i < count($dados) ; $i++) { 
+                    echo"<tr>";
+                    foreach($dados[$i] as $key => $values){
+                        if($key != "id"){
+                            echo"<td>".$values."</td>";
+                        }    
+                    }
+                    ?>
                     <td>
                         <a href="">editar</a>
                         <a href="">excluir</a>
                     </td>
-                </tr>
+                    <?Php
+                    echo"</tr>";
+                }
+                  
+            }else{
+                echo "bnaco ainda não tem pessoas cadastradas";
+            } 
+                 
+        ?>              
             </table>
         </section>
     </body>
